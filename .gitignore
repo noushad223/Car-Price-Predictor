@@ -1,0 +1,25 @@
+Ignore Python virtual environments
+/car_env/
+/CAR-PREDICTOR-API/venv/
+
+Ignore Python cache files
+pycache/
+*.pyc
+*.pyo
+*.pyd
+
+Ignore the large dataset
+/data/
+
+Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+Ignore the Django database file
+/CAR-PREDICTOR-API/db.sqlite3
+
+Ignore sensitive environment files (good practice)
+.env
+
+Ignore IDE-specific folders
+.vscode/
+.idea/
