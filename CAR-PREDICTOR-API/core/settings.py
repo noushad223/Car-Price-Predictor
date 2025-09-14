@@ -44,8 +44,6 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "dj_rest_auth",
-    "dj_rest_auth.registration",
     "django.contrib.sites",
 ]
 
@@ -154,8 +152,3 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = "none"
-
-REST_AUTH = {
-    "USER_DETAILS_SERIALIZER": "predictorAPI.serializer.UserSerializer",
-    "REGISTER_SERIALIZER": "predictorAPI.serializer.CustomRegisterSerializer",
-}
