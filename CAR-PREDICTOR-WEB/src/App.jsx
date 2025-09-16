@@ -38,18 +38,13 @@ function App() {
       <main>
         { }
         <Routes>
-          {/* Each <Route> defines a URL path and the component to render for it. */}
 
-          {/* When the URL is exactly "/", show the HomePage component */}
           <Route path="/" element={<HomePage />} />
 
-          {/* When the URL is "/login", show the LoginPage component */}
           <Route path="/login" element={<LoginPage />} />
 
-          {/* When the URL is "/register", show the RegistrationPage component */}
           <Route path="/register" element={<RegistrationPage />} />
 
-          {/* 5. This is the protected route for our dashboard. */}
           <Route
             path="/dashboard"
             element={
@@ -59,7 +54,6 @@ function App() {
             }
           />
 
-          {/* This is a catch-all that redirects any unknown URL back to the home page. */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>

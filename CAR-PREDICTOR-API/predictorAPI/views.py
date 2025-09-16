@@ -7,6 +7,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
+import joblib
+import pandas as pd
+import os
+from django.conf import settings
+
+MODEL_PATH = os.path.join(settings.BASE_DIR, "model_assets", "car_price_model.joblib")
+COLUMNS_PATH = os.path.join(settings.BASE_DIR, "model_assets", "model_columns.joblib")
 
 
 class UserListView(generics.ListAPIView):
@@ -53,3 +60,79 @@ class LoginAPIView(APIView):
             {"token": token.key, "user_id": user.pk, "email": user.email},
             status=status.HTTP_200_OK,
         )
+
+
+# Load the price predictor and the models
+try:
+    price_model = joblib.load(MODEL_PATH)
+    model_columns = joblib.load(COLUMNS_PATH)
+except FileNotFoundError:
+    price_model = None
+    model_columns = None
+    print("Could not load model")
+
+
+class PricePredictorView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):  # sourcery skip: extract-method
+        if price_model is None or model_columns is None:
+            return Response(
+                {"error": "Model could not be loaded"},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+        car_data = request.data
+
+        required_fields = [
+            "make",
+            "model",
+            "miles",
+            "feul_type",
+            "age",
+            "transmission",
+            "body_type",
+        ]
+        if any(field not in car_data for field in required_fields):
+            return Response(
+                {"error": f"missing one of the required fields:{required_fields}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            # preparing data for the model
+            input_df = pd.DataFrame([car_data])
+            input_df_processed = pd.get_dummies(input_df)
+            final_df = input_df_processed.reindex(columns=model_columns, fill_value=0)
+
+            current_prediction = price_model.predict(final_df)[0]
+
+            depreciation_data = []
+            average_miles_per_year = 10000  # average in the UK
+
+            # Loop to create a future data frame across 10 years
+            for year in range(1, 10):
+                future_df = final_df.copy()
+                future_df["age"] = future_df["age"] + year
+                future_df["miles"] = future_df["miles"] + (
+                    year * average_miles_per_year
+                )
+
+                future_price = price_model.predict(future_df)[0]
+                depreciation_data.append(
+                    {
+                        "year": int(final_df["age"].iloc[0] + year),
+                        "predicted_price": round(future_price, 2),
+                    }
+                )
+
+            response_data = {
+                "current_predicted_price": round(current_prediction, 2),
+                "depreciation_graph_data": depreciation_data,
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response(
+                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
