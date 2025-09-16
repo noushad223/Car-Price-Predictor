@@ -5,6 +5,7 @@ from .views import (
     UserDetailView,
     RegistrationAPIView,
     LoginAPIView,
+    VehicleLookupView,
 )
 
 
@@ -14,4 +15,5 @@ urlpatterns = [
     path("users/", UserListView.as_view(), name="user-list"),
     path("users/<int:pk>/", UserDetailView.as_view(), name="user-detail"),
     path("predict/", PricePredictorView.as_view(), name="predictor"),
+    path("car-lookup/", VehicleLookupView.as_view(), name="car-lookup"),
 ]

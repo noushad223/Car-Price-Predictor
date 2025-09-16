@@ -25,12 +25,16 @@ SECRET_KEY = "django-insecure-6hw-4ic%@q&r@4!)2pcv51$qv&g&9oeg@ju-*e#svxon!918&f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# VEHICLE API KEY
+VEHICLE_API_KEY = "8788433f787151cbd773c46860e43c32"
+
 ALLOWED_HOSTS = []
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    "django_extensions",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
