@@ -5,13 +5,10 @@ import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 
 const Navbar = () => {
     const navigate = useNavigate();
-    // We force a re-render on login/logout by using a state that changes,
-    // or by simply reloading the page. For simplicity, we'll rely on navigation triggering updates.
     const isAuthenticated = !!localStorage.getItem('authToken');
 
     const handleLogout = () => {
         localStorage.removeItem('authToken');
-        // Navigate to force a re-render of the navbar and protect routes
         navigate('/login');
     };
 
@@ -34,6 +31,8 @@ const Navbar = () => {
                         <>
                             <Button color="inherit" component={RouterLink} to="/login">Login</Button>
                             <Button color="inherit" component={RouterLink} to="/register">Register</Button>
+                            <Button color="inherit" component={RouterLink} to="/cardetails">Enter Car Details</Button>
+
                         </>
                     )}
                 </Box>

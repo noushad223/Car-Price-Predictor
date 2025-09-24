@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
 import DashboardPage from './pages/DashboardPage';
+import CarDetailsPage from './pages/CarDetailsPage';
 import Navbar from './components/Navbar';
 import { Container, Typography, Box, Paper } from '@mui/material';
 
@@ -44,6 +45,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
 
           <Route path="/register" element={<RegistrationPage />} />
+          <Route path="/cardetails" element={<CarDetailsPage />} />
 
           <Route
             path="/dashboard"

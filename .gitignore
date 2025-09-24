@@ -23,3 +23,6 @@ Ignore sensitive environment files (good practice)
 Ignore IDE-specific folders
 .vscode/
 .idea/
+
+Ignore settings.py file
+/CAR-PREDICTOR-API/core/settings.py

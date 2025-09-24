@@ -142,49 +142,24 @@ class PricePredictorView(APIView):
 class VehicleLookupView(APIView):
     permission_classes = [AllowAny]
 
-    def get(self, request):
-        reg = request.query_params.get("registration", None)
+    def post(self, request):
+        required_fields = [
+            "make",
+            "model",
+            "miles",
+            "feul_type",
+            "age",
+            "transmission",
+            "body_type",
+        ]
 
-        if not reg:
+        if missing_fields := [
+            field for field in required_fields if field not in request.data
+        ]:
             return Response(
-                {"error": "registration is required"},
+                {"error": f"Missing required fields: {', '.join(missing_fields)}"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        try:
-            # utilise api key
-            api_key = settings.VEHICLE_API_KEY
-            external_api_url = f"PLACEHOLDER" f"PLACEHOLDER"
-
-            # acquire the data from api payload
-            response = requests.get(external_api_url)
-            response.raise_for_status()
-            # response data
-            api_data = response.json()
-            car_details = {
-                "make": api_data.get("Make"),
-                "model": api_data.get("Model"),
-                "year": api_data.get("YearOfManufacture"),
-                "engineSize": api_data.get("EngineCapacity"),
-                "fuelType": api_data.get("FuelType"),
-                "transmission": api_data.get("Transmission"),
-                "colour": api_data.get("Colour"),
-            }
-
-            return Response(car_details, status=status.HTTP_200_OK)
-        # raise specific error reponses
-        except requests.exceptions.HTTPError as e:
-            return Response(
-                {"error": "Vehicle with that registration was not found."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        except requests.exceptions.RequestException as e:
-            return Response(
-                {"error": "Could not connect to the vehicle data service."},
-                status=status.HTTP_503_SERVICE_UNAVAILABLE,
-            )
-        except AttributeError:
-            return Response(
-                {"error": "API Key is not configured on the server."},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+        car_details = {field: request.data.get(field) for field in required_fields}
+        return Response(car_details, status=status.HTTP_200_OK)

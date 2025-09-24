@@ -1,4 +1,3 @@
-// RegistrationPage.jsx
 
 import React, { useState } from 'react';
 import axios from 'axios';
@@ -12,7 +11,7 @@ const RegistrationPage = () => {
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
-        username: '', // <-- ADD USERNAME TO STATE
+        username: '',
         email: '',
         password: '',
     });
@@ -30,12 +29,10 @@ const RegistrationPage = () => {
         setSuccess('');
 
         try {
-            // Ensure the correct URL is being used
             await axios.post('http://127.0.0.1:8000/api/register/', formData);
             setSuccess('Registration successful! Redirecting to login...');
             setTimeout(() => navigate('/login'), 2000);
         } catch (err) {
-            // Improved error handling to show backend validation messages
             let errorMsg = 'Registration failed. Please try again.';
             if (err.response?.data) {
                 const errors = Object.values(err.response.data).flat();
